@@ -5,7 +5,7 @@ function checkEmailForSpam() {
   if (emailBody && !emailBody.dataset.spamChecked) {
     const rawText = emailBody.innerText;
     emailBody.dataset.spamChecked = "true";
-    fetch("http://localhost:5000/predict", {
+    fetch("https://emailspamextension-6m20m568p-alienminus-projects.vercel.app/predict", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ text: rawText })
