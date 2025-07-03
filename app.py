@@ -21,7 +21,7 @@ def predict():
     X = vectorizer.transform([text])
     prediction = model.predict(X)[0]
     result = "spam" if prediction == 1 else "ham"
-    return jsonify({"result": result})
+    return jsonify({"result": result}), 200
 
 if __name__ == "__main__":
     app.run(debug=True)
