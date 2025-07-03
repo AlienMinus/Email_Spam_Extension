@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   checkBtn.addEventListener("click", () => {
     const text = emailText.value;
-    fetch("https://emailspamextension-6m20m568p-alienminus-projects.vercel.app/predict", {
+    fetch("https://emailspamextension-git-main-alienminus-projects.vercel.app/predict", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ text })
