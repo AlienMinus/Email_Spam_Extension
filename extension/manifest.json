@@ -6,12 +6,11 @@
   "permissions": ["scripting", "activeTab"],
   "host_permissions": [
     "http://127.0.0.1:5000/*",
-    "https://mail.google.com/*",
-    "https://outlook.live.com/*"
+    "https://mail.google.com/*"
   ],
   "content_scripts": [
     {
-      "matches": ["https://mail.google.com/*", "https://outlook.live.com/*"],
+      "matches": ["https://mail.google.com/*"],
       "js": ["content.js"],
       "run_at": "document_idle"
     }
