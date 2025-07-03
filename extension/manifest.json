@@ -5,7 +5,7 @@
   "description": "Detects spam emails using a trained ML model.",
   "permissions": ["scripting", "activeTab"],
   "host_permissions": [
-    "https://emailspamextension-git-main-alienminus-projects.vercel.app/*",
+    "http://localhost:5000/*",
     "https://mail.google.com/*"
   ],
   "content_scripts": [

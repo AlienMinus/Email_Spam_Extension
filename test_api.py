@@ -2,7 +2,7 @@
 import requests
 
 response = requests.post(
-    "https://emailspamextension-git-main-alienminus-projects.vercel.app/predict",
+    "http://localhost:5000/predict",
     json={"text": "Win a free iPhone now!"}
 )
 
