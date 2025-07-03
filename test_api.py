@@ -2,7 +2,7 @@
 import requests
 
 response = requests.post(
-    "http://localhost:5000/predict",
+    "http://127.0.0.1:5000/predict",
     json={"text": "Win a free iPhone now!"}
 )
 

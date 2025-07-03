@@ -5,7 +5,7 @@ function checkEmailForSpam() {
   if (emailBody && !emailBody.dataset.spamChecked) {
     const rawText = emailBody.innerText;
     emailBody.dataset.spamChecked = "true";
-    fetch("http://localhost:5000/predict", {
+    fetch("http://127.0.0.1:5000/predict", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ text: rawText })
@@ -18,23 +18,18 @@ function checkEmailForSpam() {
       resultTag.style.fontWeight = "bold";
       resultTag.style.borderRadius = "6px";
       resultTag.style.width = "fit-content";
-      if (data.result === "spam") {
-        resultTag.innerText = "⚠️ SPAM Detected";
-        resultTag.style.backgroundColor = "#f8d7da";
-        resultTag.style.color = "#721c24";
-        resultTag.style.border = "1px solid #f5c6cb";
-      } else {
+      if (data.result === "ham") {
         resultTag.innerText = "✅ Safe Email";
         resultTag.style.backgroundColor = "#d4edda";
         resultTag.style.color = "#155724";
-        resultTag.style.border = "1px solid #c3e6cb";
-      }
-      const target = document.querySelector("div.ajA");
-      if (target) {
-        target.parentNode.insertBefore(resultTag, target);
+        resultTag.style.border = "1px solid #c3e6cb";        
       } else {
-        emailBody.appendChild(resultTag);
+        resultTag.innerText = "⚠️ SPAM Detected";
+        resultTag.style.backgroundColor = "#f8d7da";
+        resultTag.style.color = "#721c24";
+        resultTag.style.border = "1px solid #f5c6cb"; 
       }
+      emailBody.insertBefore(resultTag, emailBody.firstChild);
     })
     .catch(err => console.error("Spam check failed:", err));
   }
