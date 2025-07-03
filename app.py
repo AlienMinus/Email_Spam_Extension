@@ -3,7 +3,8 @@ import joblib
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app)  # allow all origins
+CORS(app, origins=["chrome-extension://ccknlkpmdfadjjhfdogbfipapagemmbp"])
+  # allow all origins
 
 
 # Load model and vectorizer
