@@ -1,0 +1,107 @@
+🔍 Purpose Overview:
+•	It waits for Gmail to fully load an email.
+•	Extracts the email body content (<div class="a3s aiL">).
+•	Sends the content to a local spam detection API.
+•	Gets back a response (spam or safe) and injects a colored result message into the Gmail UI.
+
+🧠 Detailed Explanation (Line by Line):
+
+1. Run periodically until email content is available
+const checkInterval = setInterval(() => {
+•	Runs the given function every 2 seconds until it's explicitly stopped.
+•	Purpose: Waits until Gmail finishes rendering the opened email.
+
+2. Locate Gmail email body
+  const emailBody = document.querySelector("div.a3s.aiL");
+•	Selects the main email content container.
+•	div.a3s.aiL is Gmail's DOM class for rendered email body.
+•	If it's not found yet (email not opened/rendered), the script will retry in 2s.
+
+3. When email content is loaded
+  if (emailBody) {
+•	Only proceed if Gmail has rendered the email content.
+
+4. Prevent re-checking the same email
+    if (emailBody.dataset.spamChecked) return;
+    emailBody.dataset.spamChecked = "true";
+•	Avoid sending duplicate requests.
+•	Adds a custom data-spam-checked="true" attribute to mark already scanned emails.
+
+5. Extract raw text from the email
+    const rawText = emailBody.innerText;
+•	Extracts the visible text content from the email for spam analysis.
+
+6. Send text to local Flask server
+    fetch("http://127.0.0.1:5000/predict", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ text: rawText })
+    })
+•	Sends the email text to your Flask spam detection API (running locally on localhost:5000).
+•	The /predict endpoint receives a JSON payload: { "text": <email content> }.
+
+7. Handle the spam detection result
+    .then(res => res.json())
+    .then(data => {
+      const resultTag = document.createElement("div");
+      resultTag.style.padding = "6px 12px";
+      resultTag.style.margin = "10px 0";
+      resultTag.style.fontWeight = "bold";
+      resultTag.style.borderRadius = "6px";
+      resultTag.style.width = "fit-content";
+•	Parses the API response (expects { "result": "spam" | "safe" }).
+•	Dynamically creates a new <div> to show the result (with padding, margin, font, border, etc.).
+
+8. Display SPAM or SAFE label visually
+      if (data.result === "spam") {
+        resultTag.innerText = "⚠️ SPAM Detected";
+        resultTag.style.backgroundColor = "#f8d7da";
+        resultTag.style.color = "#721c24";
+        resultTag.style.border = "1px solid #f5c6cb";
+      } else {
+        resultTag.innerText = "✅ Safe Email";
+        resultTag.style.backgroundColor = "#d4edda";
+        resultTag.style.color = "#155724";
+        resultTag.style.border = "1px solid #c3e6cb";
+      }
+•	Sets message text, background color, border, and text color depending on the classification.
+
+9. Insert the result into Gmail’s UI
+      const target = document.querySelector("div.ajA"); // attachment section
+      if (target) {
+        target.parentNode.insertBefore(resultTag, target); // insert before attachments
+      } else {
+        emailBody.appendChild(resultTag); // fallback: add at end of email body
+      }
+•	Tries to insert the result above the Gmail attachment section (if it exists).
+•	If not, appends it directly to the bottom of the email content.
+
+10. Stop checking once processed
+    clearInterval(checkInterval);
+•	Stops the interval timer once an email has been successfully checked and labeled.
+
+11. Error Handling
+    .catch(err => console.error("Spam check failed:", err));
+•	Catches and logs errors if the API call fails.
+
+12. Repeat check every 2s
+}, 2000); // check every 2s
+•	Interval delay of 2000ms (2 seconds).
+
+🧪 Example Response from Flask:
+Flask endpoint /predict might return:
+{ "result": "spam" }
+or
+{ "result": "safe" }
+
+✅ Final Behavior Summary:
+Step	Action
+✅	Waits for Gmail to load an email
+📤	Extracts and sends email text to local spam detection API
+🤖	Receives spam/safe result
+💡	Injects visual tag into Gmail showing result
+🔁	Runs every 2 seconds until complete
+________________________________________
+
